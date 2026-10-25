@@ -3,16 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Carbon;
 
 class Trade extends Model
 {
-
     use SoftDeletes;
+
     protected $fillable = [
         'user_id',
-        'ticker',
+        'ticker_id',
         'buy_price',
         'sell_price',
         'quantity',
@@ -23,6 +23,7 @@ class Trade extends Model
     {
         return [
             'user_id' => 'integer',
+            'ticker_id' => 'integer',
             'buy_price' => 'decimal:4',
             'sell_price' => 'decimal:4',
             'quantity' => 'integer',
@@ -40,8 +41,6 @@ class Trade extends Model
             $sell = (float) $trade->sell_price;
             $quantity = (int) $trade->quantity;
 
-            $trade->ticker = strtoupper(trim($trade->ticker));
-
             $trade->profit = round(
                 ($sell - $buy) * $quantity,
                 2
@@ -51,5 +50,10 @@ class Trade extends Model
                 ? round((($sell - $buy) / $buy) * 100, 4)
                 : 0;
         });
+    }
+
+    public function ticker(): BelongsTo
+    {
+        return $this->belongsTo(Ticker::class);
     }
 }

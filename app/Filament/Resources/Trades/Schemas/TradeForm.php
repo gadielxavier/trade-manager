@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Trades\Schemas;
 
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
@@ -12,16 +13,15 @@ class TradeForm
     {
         return $schema
             ->components([
-                TextInput::make('ticker')
+                Select::make('ticker_id')
                     ->label('Ticker')
-                    ->required()
-                    ->maxLength(12)
-                    ->extraInputAttributes([
-                        'style' => 'text-transform: uppercase',
-                    ])
-                    ->dehydrateStateUsing(
-                        fn ($state) => strtoupper(trim($state))
-                    ),
+                    ->relationship(
+                        name: 'ticker',
+                        titleAttribute: 'code',
+                    )
+                    ->searchable()
+                    ->preload()
+                    ->required(),
 
                 DatePicker::make('date')
                     ->label('Data da operação')
