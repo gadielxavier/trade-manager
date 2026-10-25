@@ -2,28 +2,32 @@
 
 namespace App\Filament\Resources\Trades\Widgets;
 
-use App\Models\Trade;
+use App\Filament\Resources\Trades\Pages\ListTrades;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use Filament\Widgets\Concerns\InteractsWithPageTable;
 
 class TradeReturnsOverview extends StatsOverviewWidget
 {
+    use InteractsWithPageTable;
+
+    protected function getTablePage(): string
+    {
+        return ListTrades::class;
+    }
+
     protected function getStats(): array
     {
-        $userId = auth()->id();
-
         $month = $this->calculateReturns(
-            $userId,
             now()->year,
             now()->month,
         );
 
         $year = $this->calculateReturns(
-            $userId,
             now()->year,
         );
 
-        $total = $this->calculateReturns($userId);
+        $total = $this->calculateReturns();
 
         return [
             $this->makeReturnStat(
@@ -41,18 +45,16 @@ class TradeReturnsOverview extends StatsOverviewWidget
             $this->makeReturnStat(
                 'Retorno total',
                 $total,
-                'Todas as operações',
+                'Todas as operações filtradas',
             ),
         ];
     }
 
     private function calculateReturns(
-        ?int $userId,
         ?int $year = null,
         ?int $month = null,
     ): array {
-        $query = Trade::query()
-            ->where('user_id', $userId);
+        $query = clone $this->getPageTableQuery();
 
         if ($year !== null) {
             $query->whereYear('date', $year);
@@ -62,7 +64,8 @@ class TradeReturnsOverview extends StatsOverviewWidget
             $query->whereMonth('date', $month);
         }
 
-        $result = (clone $query)
+        $result = $query
+            ->reorder()
             ->selectRaw('
                 COALESCE(
                     SUM((sell_price - buy_price) * quantity),
@@ -78,13 +81,11 @@ class TradeReturnsOverview extends StatsOverviewWidget
         $profit = (float) $result->profit;
         $invested = (float) $result->invested;
 
-        $percentage = $invested > 0
-            ? ($profit / $invested) * 100
-            : 0;
-
         return [
             'profit' => $profit,
-            'percentage' => $percentage,
+            'percentage' => $invested > 0
+                ? ($profit / $invested) * 100
+                : 0,
         ];
     }
 
