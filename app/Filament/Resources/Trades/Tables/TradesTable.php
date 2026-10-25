@@ -19,7 +19,7 @@ class TradesTable
     {
         return $table
             ->columns([
-                TextColumn::make('ticker')
+                TextColumn::make('ticker.code')
                     ->label('Ticker')
                     ->searchable()
                     ->sortable()
@@ -63,14 +63,14 @@ class TradesTable
                     ->sortable(),
             ])
             ->filters([
-                SelectFilter::make('ticker')
+                SelectFilter::make('ticker_id')
                     ->label('Ticker')
-                    ->options(fn () => \App\Models\Trade::query()
-                        ->where('user_id', auth()->id())
-                        ->distinct()
-                        ->orderBy('ticker')
-                        ->pluck('ticker', 'ticker')
-                        ->all()),
+                    ->relationship(
+                        name: 'ticker',
+                        titleAttribute: 'code',
+                    )
+                    ->searchable()
+                    ->preload(),
 
                 Filter::make('date')
                     ->label('Período')
