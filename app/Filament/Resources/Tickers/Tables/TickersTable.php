@@ -3,14 +3,12 @@
 namespace App\Filament\Resources\Tickers\Tables;
 
 use App\Models\Ticker;
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class TickersTable
 {
@@ -79,12 +77,10 @@ class TickersTable
 
                 TextColumn::make('trades_count')
                     ->label('Operações')
-                    ->counts('trades')
-                    ->sortable(),
-
-                TextColumn::make('created_at')
-                    ->label('Criado em')
-                    ->dateTime('d/m/Y H:i')
+                    ->counts([
+                        'trades' => fn (Builder $query) => $query
+                            ->where('user_id', auth()->id()),
+                    ])
                     ->sortable(),
             ])
             ->filters([
@@ -98,14 +94,6 @@ class TickersTable
                         ->pluck('asset_type', 'asset_type')
                         ->all()
                     ),
-            ])
-            ->recordActions([
-                EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
             ]);
     }
 }

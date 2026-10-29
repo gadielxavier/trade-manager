@@ -2,17 +2,13 @@
 
 namespace App\Filament\Resources\Tickers;
 
-use App\Filament\Resources\Tickers\Pages\CreateTicker;
-use App\Filament\Resources\Tickers\Pages\EditTicker;
 use App\Filament\Resources\Tickers\Pages\ListTickers;
-use App\Filament\Resources\Tickers\Schemas\TickerForm;
 use App\Filament\Resources\Tickers\Tables\TickersTable;
 use App\Models\Ticker;
 use BackedEnum;
 use Filament\Resources\Resource;
-use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Filament\Support\Icons\Heroicon;
 use UnitEnum;
 
 class TickerResource extends Resource
@@ -29,27 +25,15 @@ class TickerResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'code';
 
-    public static function form(Schema $schema): Schema
-    {
-        return TickerForm::configure($schema);
-    }
-
     public static function table(Table $table): Table
     {
         return TickersTable::configure($table);
-    }
-
-    public static function getRelations(): array
-    {
-        return [];
     }
 
     public static function getPages(): array
     {
         return [
             'index' => ListTickers::route('/'),
-            'create' => CreateTicker::route('/create'),
-            'edit' => EditTicker::route('/{record}/edit'),
         ];
     }
 }
