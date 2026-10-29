@@ -6,6 +6,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
@@ -19,6 +20,12 @@ class TradesTable
     {
         return $table
             ->columns([
+                ImageColumn::make('ticker.logo_url')
+                    ->label('Logo')
+                    ->disk(null)
+                    ->height(30)
+                    ->width(30),
+
                 TextColumn::make('ticker.code')
                     ->label('Ticker')
                     ->searchable()
