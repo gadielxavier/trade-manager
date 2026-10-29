@@ -9,7 +9,24 @@ class Ticker extends Model
 {
     protected $fillable = [
         'code',
+        'name',
+        'long_name',
+        'asset_type',
+        'sub_type',
+        'exchange',
+        'currency',
+        'sector',
+        'subsector',
+        'is_active',
+        'logo_url',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'is_active' => 'boolean',
+        ];
+    }
 
     public function trades(): HasMany
     {
