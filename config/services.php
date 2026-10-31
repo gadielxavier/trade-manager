@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'brapi' => [
+        'token' => env('BRAPI_TOKEN'),
+        'url' => 'https://brapi.dev/api/v2',
+    ],
+
 ];

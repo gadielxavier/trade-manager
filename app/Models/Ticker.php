@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Ticker extends Model
 {
@@ -32,4 +33,10 @@ class Ticker extends Model
     {
         return $this->hasMany(Trade::class);
     }
+
+    public function quotes(): HasOne
+    {
+        return $this->hasOne(Quote::class);
+    }
+
 }
