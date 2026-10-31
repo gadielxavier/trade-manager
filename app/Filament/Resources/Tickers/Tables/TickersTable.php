@@ -17,6 +17,13 @@ class TickersTable
         return $table
             ->defaultSort('trades_count', 'desc')
             ->columns([
+
+                ImageColumn::make('logo_url')
+                    ->label('Logo')
+                    ->disk(null)
+                    ->height(30)
+                    ->width(30),
+
                 TextColumn::make('code')
                     ->label('Código')
                     ->searchable()
@@ -27,6 +34,11 @@ class TickersTable
                     ->searchable()
                     ->sortable()
                     ->wrap(),
+
+                TextColumn::make('quotes.regular_market_price')
+                    ->label('Cotação')
+                    ->money(fn ($record) => $record->quotes?->currency ?? 'BRL')
+                    ->sortable(),
 
                 TextColumn::make('long_name')
                     ->label('Nome completo')
@@ -68,12 +80,6 @@ class TickersTable
                     ->label('Ativo')
                     ->boolean()
                     ->sortable(),
-
-                ImageColumn::make('logo_url')
-                    ->label('Logo')
-                    ->disk(null)
-                    ->height(30)
-                    ->width(30),
 
                 TextColumn::make('trades_count')
                     ->label('Operações')
