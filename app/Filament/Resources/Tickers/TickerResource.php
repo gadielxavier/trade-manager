@@ -17,7 +17,7 @@ class TickerResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTag;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Cadastros';
+    protected static string|UnitEnum|null $navigationGroup = 'Mercado';
 
     protected static ?string $modelLabel = 'Ticker';
 
