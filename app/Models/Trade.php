@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Trade extends Model
 {
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'user_id',
@@ -17,6 +18,9 @@ class Trade extends Model
         'sell_price',
         'quantity',
         'date',
+        'wallet_transaction_id',
+        'profit',
+        'return_percent',
     ];
 
     protected function casts(): array
@@ -34,26 +38,18 @@ class Trade extends Model
         ];
     }
 
-    protected static function booted(): void
-    {
-        static::saving(function (Trade $trade): void {
-            $buy = (float) $trade->buy_price;
-            $sell = (float) $trade->sell_price;
-            $quantity = (int) $trade->quantity;
-
-            $trade->profit = round(
-                ($sell - $buy) * $quantity,
-                2
-            );
-
-            $trade->return_percent = $buy > 0
-                ? round((($sell - $buy) / $buy) * 100, 4)
-                : 0;
-        });
-    }
-
     public function ticker(): BelongsTo
     {
         return $this->belongsTo(Ticker::class);
+    }
+
+    public function walletTransaction(): BelongsTo
+    {
+        return $this->belongsTo(WalletTransaction::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

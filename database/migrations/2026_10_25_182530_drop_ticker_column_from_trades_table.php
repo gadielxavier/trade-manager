@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('trades', function (Blueprint $table) {
+            $table->dropIndex('trades_ticker_index');
             $table->dropColumn('ticker');
         });
     }
@@ -23,6 +24,7 @@ return new class extends Migration
     {
         Schema::table('trades', function (Blueprint $table) {
             $table->string('ticker', 12)->nullable();
+            $table->index('ticker');
         });
     }
 };

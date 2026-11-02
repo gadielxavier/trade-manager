@@ -2,18 +2,15 @@
 
 namespace App\Filament\Resources\Trades;
 
-use App\Filament\Resources\Trades\Pages\CreateTrade;
-use App\Filament\Resources\Trades\Pages\EditTrade;
 use App\Filament\Resources\Trades\Pages\ListTrades;
-use App\Filament\Resources\Trades\Schemas\TradeForm;
 use App\Filament\Resources\Trades\Tables\TradesTable;
 use App\Models\Trade;
 use BackedEnum;
-use Illuminate\Database\Eloquent\Builder;
 use Filament\Resources\Resource;
-use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class TradeResource extends Resource
 {
@@ -22,14 +19,13 @@ class TradeResource extends Resource
     protected static string|BackedEnum|null $navigationIcon =
         Heroicon::OutlinedRectangleStack;
 
-    protected static string|null|\UnitEnum $navigationGroup = 'Cadastros';
+    protected static string|null|\UnitEnum $navigationGroup = 'Carteira';
 
-    protected static ?string $recordTitleAttribute = 'ticker';
+    protected static ?string $navigationLabel = 'Trades';
 
-    public static function form(Schema $schema): Schema
-    {
-        return TradeForm::configure($schema);
-    }
+    protected static ?string $modelLabel = 'Trade';
+
+    protected static ?string $pluralModelLabel = 'Trades';
 
     public static function table(Table $table): Table
     {
@@ -42,17 +38,30 @@ class TradeResource extends Resource
             ->where('user_id', auth()->id());
     }
 
-    public static function getRelations(): array
+    public static function canCreate(): bool
     {
-        return [];
+        return false;
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return false;
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return false;
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        return false;
     }
 
     public static function getPages(): array
     {
         return [
             'index' => ListTrades::route('/'),
-            'create' => CreateTrade::route('/create'),
-            'edit' => EditTrade::route('/{record}/edit'),
         ];
     }
 }
