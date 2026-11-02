@@ -56,4 +56,9 @@ class Trade extends Model
     {
         return $this->belongsTo(Ticker::class);
     }
+
+    public function walletTransaction(): BelongsTo
+    {
+        return $this->belongsTo(WalletTransaction::class);
+    }
 }
