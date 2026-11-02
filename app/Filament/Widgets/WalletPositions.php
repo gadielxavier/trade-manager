@@ -27,7 +27,7 @@ class WalletPositions extends TableWidget
             ->query(
                 fn (): Builder => WalletPosition::query()
                     ->whereIn('id', $positionIds)
-                    ->with('ticker')
+                    ->with(['ticker.quotes'])
             )
             ->columns([
                 TextColumn::make('ticker.code')
@@ -45,6 +45,34 @@ class WalletPositions extends TableWidget
                     ->label('Preço médio')
                     ->money('BRL')
                     ->sortable(),
+
+                TextColumn::make('ticker.quotes.regular_market_price')
+                    ->label('Preço atual')
+                    ->money(fn ($record) => $record->ticker->quotes?->currency ?? 'BRL')
+                    ->sortable(),
+
+                TextColumn::make('ticker.quotes.regular_market_change')
+                    ->label('Variação')
+                    ->money(fn ($record) => $record->ticker->quotes?->currency ?? 'BRL')
+                    ->color(fn ($state) => match (true) {
+                        (float) $state > 0 => 'success',
+                        (float) $state < 0 => 'danger',
+                        default => 'gray',
+                    }),
+
+                TextColumn::make('ticker.quotes.regular_market_change_percent')
+                    ->label('Rentabilidade')
+                    ->formatStateUsing(fn ($state) => number_format(
+                            (float) $state,
+                            2,
+                            ',',
+                            '.'
+                        ) . '%')
+                    ->color(fn ($state) => match (true) {
+                        (float) $state > 0 => 'success',
+                        (float) $state < 0 => 'danger',
+                        default => 'gray',
+                    }),
 
                 TextColumn::make('invested_amount')
                     ->label('Total investido')
