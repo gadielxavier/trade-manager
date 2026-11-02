@@ -2,6 +2,9 @@
 
 namespace App\Filament\Resources\Wallets\Tables;
 
+use App\Filament\Resources\Wallets\Actions\DepositAction;
+use App\Filament\Resources\Wallets\Actions\PurchaseAction;
+use App\Filament\Resources\Wallets\Actions\SellAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -66,6 +69,9 @@ class WalletsTable
                     ),
             ])
             ->recordActions([
+                DepositAction::make(),
+                PurchaseAction::make(),
+                SellAction::make(),
                 ViewAction::make(),
                 EditAction::make(),
             ])

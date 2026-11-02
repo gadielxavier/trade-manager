@@ -2,11 +2,7 @@
 
 namespace App\Filament\Resources\WalletTransactions;
 
-use App\Filament\Resources\WalletTransactions\Pages\CreateWalletTransaction;
-use App\Filament\Resources\WalletTransactions\Pages\EditWalletTransaction;
 use App\Filament\Resources\WalletTransactions\Pages\ListWalletTransactions;
-use App\Filament\Resources\WalletTransactions\Pages\ViewWalletTransaction;
-use App\Filament\Resources\WalletTransactions\Schemas\WalletTransactionForm;
 use App\Filament\Resources\WalletTransactions\Schemas\WalletTransactionInfolist;
 use App\Filament\Resources\WalletTransactions\Tables\WalletTransactionsTable;
 use App\Models\WalletTransaction;
@@ -15,6 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class WalletTransactionResource extends Resource
 {
@@ -22,10 +19,11 @@ class WalletTransactionResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    public static function form(Schema $schema): Schema
-    {
-        return WalletTransactionForm::configure($schema);
-    }
+    protected static ?string $navigationLabel = 'Movimentações';
+
+    protected static ?string $modelLabel = 'Movimentação';
+
+    protected static ?string $pluralModelLabel = 'Movimentações';
 
     public static function infolist(Schema $schema): Schema
     {
@@ -37,20 +35,18 @@ class WalletTransactionResource extends Resource
         return WalletTransactionsTable::configure($table);
     }
 
-    public static function getRelations(): array
+    public static function getEloquentQuery(): Builder
     {
-        return [
-            //
-        ];
+        return parent::getEloquentQuery()
+            ->whereHas('wallet', function (Builder $query) {
+                $query->where('user_id', auth()->id());
+            });
     }
 
     public static function getPages(): array
     {
         return [
             'index' => ListWalletTransactions::route('/'),
-            'create' => CreateWalletTransaction::route('/create'),
-            'view' => ViewWalletTransaction::route('/{record}'),
-            'edit' => EditWalletTransaction::route('/{record}/edit'),
         ];
     }
 }
