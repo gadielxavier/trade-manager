@@ -21,7 +21,7 @@ class WalletTransactionResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static ?string $navigationLabel = 'Movimentações';
+        protected static ?string $navigationLabel = 'Movimentações';
 
     protected static ?string $modelLabel = 'Movimentação';
 

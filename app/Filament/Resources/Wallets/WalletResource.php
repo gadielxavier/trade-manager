@@ -26,6 +26,8 @@ class WalletResource extends Resource
 
     protected static string|null|\UnitEnum $navigationGroup = 'Carteira';
 
+    protected static ?string $navigationLabel = 'Carteiras';
+
     protected static ?string $recordTitleAttribute = 'name';
 
     public static function form(Schema $schema): Schema

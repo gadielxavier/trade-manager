@@ -2,13 +2,8 @@
 
 namespace App\Filament\Resources\Wallets\Tables;
 
-use App\Filament\Resources\Wallets\Actions\DepositAction;
-use App\Filament\Resources\Wallets\Actions\PurchaseAction;
-use App\Filament\Resources\Wallets\Actions\SellAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
@@ -67,13 +62,6 @@ class WalletsTable
                     ->query(fn (Builder $query): Builder =>
                     $query->has('positions')
                     ),
-            ])
-            ->recordActions([
-                DepositAction::make(),
-                PurchaseAction::make(),
-                SellAction::make(),
-                ViewAction::make(),
-                EditAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
