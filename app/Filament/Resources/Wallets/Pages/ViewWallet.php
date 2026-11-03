@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Wallets\Pages;
 
 use App\Filament\Resources\Wallets\WalletResource;
+use App\Filament\Widgets\WalletPositions;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 
@@ -14,6 +15,20 @@ class ViewWallet extends ViewRecord
     {
         return [
             EditAction::make(),
+        ];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            WalletPositions::class,
+        ];
+    }
+
+    protected function getHeaderWidgetsData(): array
+    {
+        return [
+            'record' => $this->getRecord(),
         ];
     }
 }

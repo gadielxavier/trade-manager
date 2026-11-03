@@ -7,7 +7,6 @@ use App\Filament\Resources\Wallets\Pages\EditWallet;
 use App\Filament\Resources\Wallets\Pages\ListWallets;
 use App\Filament\Resources\Wallets\Pages\ViewWallet;
 use App\Filament\Resources\Wallets\Schemas\WalletForm;
-use App\Filament\Resources\Wallets\Schemas\WalletInfolist;
 use App\Filament\Resources\Wallets\Tables\WalletsTable;
 use App\Models\Wallet;
 use BackedEnum;
@@ -33,11 +32,6 @@ class WalletResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return WalletForm::configure($schema);
-    }
-
-    public static function infolist(Schema $schema): Schema
-    {
-        return WalletInfolist::configure($schema);
     }
 
     public static function table(Table $table): Table
