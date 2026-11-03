@@ -2,111 +2,70 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\WalletPosition;
 use App\Services\Wallet\WalletDashboardService;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Table;
-use Filament\Widgets\TableWidget;
-use Illuminate\Database\Eloquent\Builder;
+use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\Auth;
 
-class WalletPositions extends TableWidget
+class WalletPositions extends ChartWidget
 {
-    protected static ?string $heading = 'Minha carteira de ativos';
+    protected ?string $heading = 'Distribuição da carteira';
+
+    protected ?string $description =
+        'Participação de cada ativo no total investido.';
 
     protected int|string|array $columnSpan = 'full';
 
-    public function table(Table $table): Table
+    protected function getData(): array
     {
         $dashboard = app(WalletDashboardService::class)
             ->execute(Auth::user());
 
-        $positionIds = $dashboard['positions']->modelKeys();
+        $positions = $dashboard['positions'];
 
-        return $table
-            ->query(
-                fn (): Builder => WalletPosition::query()
-                    ->whereIn('id', $positionIds)
-                    ->with(['ticker.quotes'])
-            )
-            ->columns([
-                TextColumn::make('ticker.code')
-                    ->label('Ativo')
-                    ->searchable()
-                    ->sortable()
-                    ->weight('bold'),
+        return [
+            'datasets' => [
+                [
+                    'label' => 'Total investido',
+                    'data' => $positions
+                        ->pluck('invested_amount')
+                        ->map(fn ($value) => (float) $value)
+                        ->values()
+                        ->all(),
+                ],
+            ],
+            'labels' => $positions
+                ->map(fn ($position) => $position->ticker->code)
+                ->values()
+                ->all(),
+        ];
+    }
 
-                TextColumn::make('quantity')
-                    ->label('Quantidade')
-                    ->numeric()
-                    ->sortable(),
+    protected function getType(): string
+    {
+        return 'pie';
+    }
 
-                TextColumn::make('average_price')
-                    ->label('Preço médio')
-                    ->money('BRL')
-                    ->sortable(),
+    protected function getOptions(): array
+    {
+        return [
+            'plugins' => [
+                'legend' => [
+                    'position' => 'bottom',
+                ],
+                'tooltip' => [
+                    'callbacks' => [
+                        'label' => 'function(context) {
+                            let value = context.parsed;
 
-                TextColumn::make('ticker.quotes.regular_market_price')
-                    ->label('Preço atual')
-                    ->money(fn ($record) => $record->ticker->quotes?->currency ?? 'BRL')
-                    ->sortable(),
-
-                TextColumn::make('ticker.quotes.regular_market_change')
-                    ->label('Variação')
-                    ->money(fn ($record) => $record->ticker->quotes?->currency ?? 'BRL')
-                    ->color(fn ($state) => match (true) {
-                        (float) $state > 0 => 'success',
-                        (float) $state < 0 => 'danger',
-                        default => 'gray',
-                    }),
-
-                TextColumn::make('ticker.quotes.regular_market_change_percent')
-                    ->label('Rentabilidade')
-                    ->formatStateUsing(fn ($state) => number_format(
-                            (float) $state,
-                            2,
-                            ',',
-                            '.'
-                        ) . '%')
-                    ->color(fn ($state) => match (true) {
-                        (float) $state > 0 => 'success',
-                        (float) $state < 0 => 'danger',
-                        default => 'gray',
-                    }),
-
-                TextColumn::make('invested_amount')
-                    ->label('Total investido')
-                    ->money('BRL')
-                    ->sortable()
-                    ->color('info'),
-
-                TextColumn::make('participation')
-                    ->label('Participação')
-                    ->state(function (WalletPosition $record) use ($dashboard): string {
-                        $total = (float) $dashboard['invested_amount'];
-
-                        if ($total <= 0) {
-                            return '0,00%';
-                        }
-
-                        $percentage = (
-                                (float) $record->invested_amount / $total
-                            ) * 100;
-
-                        return number_format(
-                                $percentage,
-                                2,
-                                ',',
-                                '.'
-                            ) . '%';
-                    }),
-            ])
-            ->defaultSort('invested_amount', 'desc')
-            ->striped()
-            ->emptyStateHeading('Nenhum ativo na carteira')
-            ->emptyStateDescription(
-                'Quando você comprar seus primeiros ativos, eles aparecerão aqui.'
-            )
-            ->emptyStateIcon('heroicon-o-chart-bar');
+                            return context.label + ": " +
+                                new Intl.NumberFormat("pt-BR", {
+                                    style: "currency",
+                                    currency: "BRL"
+                                }).format(value);
+                        }',
+                    ],
+                ],
+            ],
+        ];
     }
 }
