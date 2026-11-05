@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\Wallets\Pages;
 
 use App\Filament\Resources\Wallets\WalletResource;
-use App\Filament\Widgets\WalletPositions;
+use App\Filament\Resources\Wallets\Widgets\WalletPositions;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 
