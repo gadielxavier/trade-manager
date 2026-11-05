@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Services\Wallet\WalletDashboardService;
+use Filament\Support\RawJs;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\Auth;
 
@@ -65,30 +66,37 @@ class WalletPositions extends ChartWidget
         return 'pie';
     }
 
-    protected function getOptions(): array
+    protected function getOptions(): RawJs
     {
-        return [
-            'plugins' => [
-                'legend' => [
-                    'position' => 'bottom',
-                ],
-                'tooltip' => [
-                    'callbacks' => [
-                        'title' => 'function(context) {
-                        return context[0].label;
-                    }',
-                        'label' => 'function(context) {
-                        let value = context.parsed;
+        return RawJs::make(<<<'JS'
+    {
+        plugins: {
+            legend: {
+                position: 'bottom',
+            },
+            tooltip: {
+                enabled: true,
+                callbacks: {
+                    title: function (items) {
+                        return items[0].label;
+                    },
+                    label: function (context) {
+                        const value = context.raw;
 
-                        return "Total investido: " +
-                            new Intl.NumberFormat("pt-BR", {
-                                style: "currency",
-                                currency: "BRL"
+                        return 'Total investido: ' +
+                            new Intl.NumberFormat('pt-BR', {
+                                style: 'currency',
+                                currency: 'BRL',
                             }).format(value);
-                    }',
-                    ],
-                ],
-            ],
-        ];
+                    },
+                },
+            },
+        },
+        hover: {
+            mode: 'nearest',
+            intersect: true,
+        },
+    }
+    JS);
     }
 }
