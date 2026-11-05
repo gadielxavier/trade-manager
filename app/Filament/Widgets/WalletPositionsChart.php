@@ -14,7 +14,9 @@ class WalletPositionsChart extends ChartWidget
     protected ?string $description =
         'Participação de cada ativo no total investido.';
 
-    protected int|string|array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 1;
+
+    protected static ?int $sort = 2;
 
     protected function getData(): array
     {

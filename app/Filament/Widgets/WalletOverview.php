@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Auth;
 
 class WalletOverview extends StatsOverviewWidget
 {
+
+    protected int|string|array $columnSpan = 'full';
+
+    protected static ?int $sort = 1;
+
     protected function getStats(): array
     {
         $dashboard = app(WalletDashboardService::class)

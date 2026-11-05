@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Widgets\WalletAssetTypeChart;
 use App\Filament\Widgets\WalletOverview;
 use App\Filament\Widgets\WalletPositionsChart;
 use App\Http\Middleware\EnsureWalletExists;
@@ -41,6 +42,7 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 WalletOverview::class,
                 WalletPositionsChart::class,
+                WalletAssetTypeChart::class,
             ])
             ->middleware([
                 EncryptCookies::class,
