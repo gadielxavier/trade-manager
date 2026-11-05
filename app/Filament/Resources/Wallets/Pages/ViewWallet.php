@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\Wallets\Pages;
 
 use App\Filament\Resources\Wallets\WalletResource;
-use App\Filament\Resources\Wallets\Widgets\WalletPositions;
+use App\Filament\Resources\Wallets\Widgets\WalletPositionsTable;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 
@@ -21,7 +21,7 @@ class ViewWallet extends ViewRecord
     protected function getHeaderWidgets(): array
     {
         return [
-            WalletPositions::class,
+            WalletPositionsTable::class,
         ];
     }
 

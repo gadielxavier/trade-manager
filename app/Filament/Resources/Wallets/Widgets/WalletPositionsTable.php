@@ -9,7 +9,7 @@ use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
 
-class WalletPositions extends TableWidget
+class WalletPositionsTable extends TableWidget
 {
     protected static ?string $heading = 'Ativos da carteira';
 

@@ -7,7 +7,7 @@ use Filament\Support\RawJs;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\Auth;
 
-class WalletPositions extends ChartWidget
+class WalletPositionsChart extends ChartWidget
 {
     protected ?string $heading = 'Distribuição da carteira';
 

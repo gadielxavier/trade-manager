@@ -3,7 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Widgets\WalletOverview;
-use App\Filament\Widgets\WalletPositions;
+use App\Filament\Widgets\WalletPositionsChart;
 use App\Http\Middleware\EnsureWalletExists;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -40,7 +40,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 WalletOverview::class,
-                WalletPositions::class,
+                WalletPositionsChart::class,
             ])
             ->middleware([
                 EncryptCookies::class,
